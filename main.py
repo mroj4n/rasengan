@@ -13,7 +13,7 @@ detector = htm.handDetector()
 files=[]
 path = glob.glob("rasengan/*.png")
 for img in path:
-    n = cv2.imread(img)
+    n = cv2.imread(img,1)
     files.append(n)
 rasengan=[]
 size_ratio=3
@@ -39,7 +39,12 @@ while True:
         cx=round ((cxa+cxb/2))
         cy=round ((cya+cyb/2))
         img2=rasengan[rasengan_count]
-        img[cya:cya+img2.shape[0], cxa:cxa+img2.shape[1]] = img2
+
+        for i in range (0,img2.shape[0]):
+            for j in range (0,img2.shape[1]):
+                if(img2[i][j][0]>150):
+                    img[i+cya][j+cxa]=img2[i][j]
+
         rasengan_count += 1
 
     if(rasengan_count==(len(rasengan))):
@@ -49,6 +54,6 @@ while True:
     cTime = time.time()
     fps = 1 / (cTime - pTime)
     pTime = cTime
-
+    
     cv2.imshow("Image", img)
     cv2.waitKey(1)
