@@ -43,7 +43,7 @@ while True:
         for i in range (0,img2.shape[0]):
             for j in range (0,img2.shape[1]):
                 if(img2[i][j][0]>150):
-                    img[i+cya][j+cxa]=img2[i][j]
+                    img[i+cya-round(img2.shape[0]/2)][j+cxa-round(img2.shape[1]/2)]=img2[i][j]
 
         rasengan_count += 1
 
