@@ -34,19 +34,21 @@ while True:
     if len(lmList) != 0:
         cxa=round( (lmList[0][1]+lmList[9][1])/2 )
         cya=round( (lmList[0][2]+lmList[9][2])/2 )
-        cxb=round( (lmList[0][1]+lmList[13][1])/2 )
-        cyb=round( (lmList[0][2]+lmList[13][2])/2 )
-        cx=round ((cxa+cxb/2))
-        cy=round ((cya+cyb/2))
-        img2=rasengan[rasengan_count]
+
+        rasengan_to_hand_ratio=rasengan[rasengan_count].shape[1]/(lmList[0][2]-lmList[12][2])#to resize the image depending of the distance between tip of middle to palm
+        rasengan_size_x=abs(round (1.5* (rasengan[rasengan_count].shape[1]/rasengan_to_hand_ratio) ) )
+        rasengan_size_y=abs(round (1.5* (rasengan[rasengan_count].shape[0]/rasengan_to_hand_ratio) ) )
+        img2=cv2.resize(rasengan[rasengan_count], (rasengan_size_x,rasengan_size_y) )
+
+        horizontal_offset=round( (lmList[0][1]+lmList[5][1])/2 )-round( (lmList[0][1]+lmList[13][1])/2 )#For tilting of hand
 
         for i in range (0,img2.shape[0]):
             for j in range (0,img2.shape[1]):
                 if(img2[i][j][0]>150):
-                    img[i+cya-round(img2.shape[0]/2)][j+cxa-round(img2.shape[1]/2)]=img2[i][j]
+                    img[i+cya-round(img2.shape[0]/2)][j+cxa-round(img2.shape[1]/2)-horizontal_offset]=img2[i][j]
 
         rasengan_count += 1
-
+    
     if(rasengan_count==(len(rasengan))):
         rasengan_count=0
 
