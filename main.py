@@ -5,6 +5,16 @@ import HandTrackingModule as htm
 import numpy as np
 import glob
 
+from ctypes import cast, POINTER
+from comtypes import CLSCTX_ALL
+from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
+
+
+devices = AudioUtilities.GetSpeakers()
+interface = devices.Activate(
+    IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+volume = cast(interface, POINTER(IAudioEndpointVolume))
+
 pTime = 0
 cTime = 0
 cap = cv2.VideoCapture(0)
@@ -25,11 +35,15 @@ for resizer in files:
 
 
 rasengan_count=0
+current_vol_height=39
 
 while True:
     success, img = cap.read()
     img = detector.findHands(img, draw=False )
     lmList = detector.findPosition(img, draw=False)
+    height, width, channels = img.shape
+
+    cv2.rectangle(img,(height-1,39),(height+41,height-39),(255,255,255),3)
 
     if len(lmList) != 0:
         cxa=round( (lmList[0][1]+lmList[9][1])/2 )
@@ -48,10 +62,21 @@ while True:
                     img[i+cya-round(img2.shape[0]/2)][j+cxa-round(img2.shape[1]/2)-horizontal_offset]=img2[i][j]
 
         rasengan_count += 1
-    
+        
+        
+        if lmList[8][1]>height-1 and  lmList[8][1] < height+41 and lmList[8][2]>39:
+            current_vol_height=lmList[8][2]
+            vol_percentage=100-  (( lmList[8][2] / height )*100)
+            volume.SetMasterVolumeLevelScalar( (round(vol_percentage)/100)   ,None)
+            print( str(lmList[8][2])+ "  " + str(vol_percentage))
+
+    cv2.rectangle(img,(height,current_vol_height),(height+40,height-40),(0,0,0),-1)   #-1) for filled
+
+
+
     if(rasengan_count==(len(rasengan))):
         rasengan_count=0
-
+    
 
     cTime = time.time()
     fps = 1 / (cTime - pTime)
