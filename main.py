@@ -52,7 +52,7 @@ while True:
                                             height-39), (255, 255, 255), 3)
 
     if len(lmList) != 0:
-        cxa = round((lmList[0][1]+lmList[9][1])/2)
+        cxa = round((lmList[0][1]+lmList[9][1])/2)#coordinates for the center of palm
         cya = round((lmList[0][2]+lmList[9][2])/2)
 
         # to resize the image depending of the distance between tip of middle to palm
@@ -70,7 +70,7 @@ while True:
 
         for i in range(0, img2.shape[0]):
             for j in range(0, img2.shape[1]):
-                if(img2[i][j][0] > 150):
+                if(img2[i][j][0] > 150): #pixel values less than 150 is ignored. This is done to remove the balck background. If the frames do not need any removal this line can be removed
                     img[i+cya-round(img2.shape[0]/2)][j+cxa -
                                                       round(img2.shape[1]/2)-horizontal_offset] = img2[i][j]
 
