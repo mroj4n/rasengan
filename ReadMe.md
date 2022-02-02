@@ -25,6 +25,7 @@ It uses the HandTrackingModule.py to do the detection of the hand. This Module i
 The program places a Rasengan on palm of the user. It does this in real-time video. The Rasengan that is placed is animated. This is done by using different frames of the Rasengan and then changing each frame of Rasengan based on the change of frame of the actual output.
 #### Volume Slider
 This code also supports controlling system volume using a slider. This was mostly done to test out the hand detection and the code was left in as a proof of concept. 
+To toggle the slider please check line 14 in main.py
 
 
 
