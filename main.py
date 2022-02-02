@@ -4,10 +4,14 @@ import time
 import HandTrackingModule as htm
 import numpy as np
 import glob
+import os
 
-from ctypes import cast, POINTER
-from comtypes import CLSCTX_ALL
-from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
+isWindows = False
+if os.name == 'nt':
+    from ctypes import cast, POINTER
+    from comtypes import CLSCTX_ALL
+    from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
+    isWindows = True  # change this variable to false if you want volume slider to be turned off. It is turned on for windows by default
 
 
 devices = AudioUtilities.GetSpeakers()
@@ -43,8 +47,9 @@ while True:
     lmList = detector.findPosition(img, draw=False)
     height, width, channels = img.shape
 
-    cv2.rectangle(img, (height-1, 39), (height+41,
-                  height-39), (255, 255, 255), 3)
+    if isWindows:
+        cv2.rectangle(img, (height-1, 39), (height+41,
+                                            height-39), (255, 255, 255), 3)
 
     if len(lmList) != 0:
         cxa = round((lmList[0][1]+lmList[9][1])/2)
@@ -71,14 +76,15 @@ while True:
 
         rasengan_count += 1
 
-        if lmList[8][1] > height-1 and lmList[8][1] < height+41 and lmList[8][2] > 39:
+        if isWindows and lmList[8][1] > height-1 and lmList[8][1] < height+41 and lmList[8][2] > 39:
             current_vol_height = lmList[8][2]
             vol_percentage = 100 - ((lmList[8][2] / height)*100)
             volume.SetMasterVolumeLevelScalar(
                 (round(vol_percentage)/100), None)
 
-    cv2.rectangle(img, (height, current_vol_height),
-                  (height+40, height-40), (0, 0, 0), -1)
+    if isWindows:
+        cv2.rectangle(img, (height, current_vol_height),
+                      (height+40, height-40), (0, 0, 0), -1)
 
     if(rasengan_count == (len(rasengan))):
         rasengan_count = 0
